@@ -7,6 +7,52 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 router.post(
+  '/login',
+  [
+    check('email', 'Please includ a valid email').isEmail(),
+    check('password1', 'Password is requierd').exists(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      // if there are errors return 400 (bed request);
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email, password1 } = req.body;
+
+    try {
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Invalid Credentials' }] });
+      }
+
+      const compare = await bcrypt.compare(password1, user.password);
+
+      if (!compare) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Invalid Credentials' }] });
+      }
+
+      const token = jwt.sign({ id: user._id }, process.env.TOKEN);
+
+      return res.status(200).json({
+        token,
+        userId: user._id,
+      });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
+  }
+);
+
+router.post(
   '/singup',
   [
     check('firstName', 'First name is required').trim().not().isEmpty(),
