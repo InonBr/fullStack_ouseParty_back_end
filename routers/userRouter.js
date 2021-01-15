@@ -1,6 +1,7 @@
 const express = require('express');
 const router = new express.Router();
 const { check, validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
 
 const User = require('../models/User');
 
@@ -30,9 +31,45 @@ router.post(
     if (!errors.isEmpty()) {
       // if there are errors return 400 (bed request);
       return res.status(400).json({ errors: errors.array() });
-    } else {
-      return res.status(200).json({ msg: 'good request' });
     }
+
+    const { firstName, lastName, username, email, password1 } = req.body;
+
+    try {
+      const userEmail = await User.findOne({ email });
+      const userUsername = await User.findOne({ username });
+
+      if (userEmail) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'User alredy exists' }] });
+      }
+
+      if (userUsername) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'User alredy exists' }] });
+      }
+
+      newUser = {
+        firstName,
+        lastName,
+        username,
+        email,
+        password1,
+      };
+
+      console.log(newUser);
+
+      newUser.password1 = await bcrypt.hash(newUser.password1, 10);
+
+      console.log(newUser);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
+
+    return res.status(200).json({ msg: 'good request' });
   }
 );
 
