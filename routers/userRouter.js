@@ -2,6 +2,7 @@ const express = require('express');
 const router = new express.Router();
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 
@@ -36,40 +37,44 @@ router.post(
     const { firstName, lastName, username, email, password1 } = req.body;
 
     try {
+      // test if email and username are unique
       const userEmail = await User.findOne({ email });
       const userUsername = await User.findOne({ username });
 
-      if (userEmail) {
+      if (userEmail || userUsername) {
+        if (userEmail) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: 'Email already registered' }] });
+        }
+
         return res
           .status(400)
-          .json({ errors: [{ msg: 'User alredy exists' }] });
+          .json({ errors: [{ msg: 'Username alredy exists' }] });
       }
 
-      if (userUsername) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'User alredy exists' }] });
-      }
+      const password = await bcrypt.hash(password1, 10);
 
-      newUser = {
+      newUser = new User({
         firstName,
         lastName,
         username,
         email,
-        password1,
-      };
+        password,
+      });
 
-      console.log(newUser);
+      await newUser.save();
 
-      newUser.password1 = await bcrypt.hash(newUser.password1, 10);
+      const token = jwt.sign({ id: newUser._id }, process.env.TOKEN);
 
-      console.log(newUser);
+      return res.status(200).json({
+        token,
+        userId: newUser._id,
+      });
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server error');
     }
-
-    return res.status(200).json({ msg: 'good request' });
   }
 );
 
