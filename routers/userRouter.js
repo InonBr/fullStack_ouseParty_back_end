@@ -39,11 +39,19 @@ router.post(
           .json({ errors: [{ msg: 'Invalid Credentials' }] });
       }
 
-      const token = jwt.sign({ id: user._id }, process.env.TOKEN);
+      const token = jwt.sign(
+        {
+          id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          username: user.username,
+          email: user.email,
+        },
+        process.env.TOKEN
+      );
 
       return res.status(200).json({
         token,
-        userId: user._id,
       });
     } catch (err) {
       console.error(err.message);
@@ -111,11 +119,19 @@ router.post(
 
       await newUser.save();
 
-      const token = jwt.sign({ id: newUser._id }, process.env.TOKEN);
+      const token = jwt.sign(
+        {
+          id: newUser._id,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          username: newUser.username,
+          email: newUser.email,
+        },
+        process.env.TOKEN
+      );
 
       return res.status(200).json({
         token,
-        userId: newUser._id,
       });
     } catch (err) {
       console.error(err.message);
