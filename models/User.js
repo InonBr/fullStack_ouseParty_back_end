@@ -19,11 +19,6 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     type: String,
   },
-  spotifyId: {
-    required: true,
-    // unique: true, // needs to be unique, lets ignore it for now...
-    type: String,
-  },
   password: {
     required: true,
     type: String,

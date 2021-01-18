@@ -46,7 +46,6 @@ router.post(
           lastName: user.lastName,
           username: user.username,
           email: user.email,
-          spotifyId: user.spotifyId,
           partysIds: user.partysIds,
         },
         process.env.TOKEN
@@ -69,7 +68,6 @@ router.post(
     check('lastName', 'Last name is required').trim().not().isEmpty(),
     check('username', 'Username is required').trim().not().isEmpty(),
     check('email', 'Please includ a valid email').trim().isEmail(),
-    check('spotifyId', 'Spotify ID is required').trim().not().isEmpty(),
     check('password1', 'Please enter a password with 6 or more characters')
       .trim()
       .isLength({
@@ -91,14 +89,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const {
-      firstName,
-      lastName,
-      username,
-      email,
-      spotifyId,
-      password1,
-    } = req.body;
+    const { firstName, lastName, username, email, password1 } = req.body;
 
     try {
       // test if email and username are unique
@@ -126,7 +117,6 @@ router.post(
         lastName,
         username,
         email,
-        spotifyId,
         partysIds,
         password,
       });
@@ -140,7 +130,6 @@ router.post(
           lastName: newUser.lastName,
           username: newUser.username,
           email: newUser.email,
-          spotifyId: newUser.spotifyId,
           partysIds: newUser.partysIds,
         },
         process.env.TOKEN
