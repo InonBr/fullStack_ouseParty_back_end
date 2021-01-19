@@ -14,6 +14,9 @@ const PartySchema = new mongoose.Schema({
     unique: true,
     type: String,
   },
+  songsList: {
+    type: Array
+  }
 });
 
 module.exports = Party = mongoose.model('parties', PartySchema);
