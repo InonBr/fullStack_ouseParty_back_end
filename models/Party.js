@@ -14,6 +14,10 @@ const PartySchema = new mongoose.Schema({
     unique: true,
     type: String,
   },
+  name: {
+    required: true,
+    type: String,
+  },
   songsList: {
     type: Array
   }
