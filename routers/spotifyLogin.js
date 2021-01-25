@@ -10,7 +10,8 @@ router.post('/spotifylogin', (req, res) => {
       url: 'https://accounts.spotify.com/api/token',
       headers: {
         Authorization:
-          'Basic ' + new Buffer(clientId + ':' + secret).toString('base64'),
+          'Basic ' +
+          new Buffer.from(clientId + ':' + secret).toString('base64'),
       },
       form: {
         grant_type: 'authorization_code',
@@ -21,7 +22,7 @@ router.post('/spotifylogin', (req, res) => {
     };
 
     request.post(authOptionsGetRefresh, async (error, response, body) => {
-      const refreshToken = await body.refresh_token;
+      await body.refresh_token;
 
       return res.status(200).json({
         body,
