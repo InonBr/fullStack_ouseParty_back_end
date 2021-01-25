@@ -18,8 +18,8 @@ const PartySchema = new mongoose.Schema({
     required: true,
     type: String,
   },
-  songsList: {
-    type: Array
+  playlistId: {
+    type: String
   }
 });
 

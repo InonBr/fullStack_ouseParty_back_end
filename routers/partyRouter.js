@@ -14,18 +14,34 @@ router.post('/startparty', auth, async (req, res) => {
             userId,
             date,
             partyId,
-            name
+            name,
+            playlistId
         });
         await newParty.save();
         const user = await User.findById(userId);
         user.partysIds.push(partyId);
         await user.save();
-        res.status(200).json(partyId);
+        res.status(200).json(newParty);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 });
+router.post('/startparty/:id', async (req, res) => {
+    try {
+        const { playlistId } = req.body
+        const { id } = req.params
+        const party = await Party.findOneAndUpdate({ partyId: id }, { playlistId })
+        if (!party)
+            res.status(404).send('Party not found')
+        await party.save();
+        res.send('Playlist is set on the party!')
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 router.post('/joinparty', async (req, res) => {
     const { partyId } = req.body
     try {
