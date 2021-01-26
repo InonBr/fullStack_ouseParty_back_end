@@ -11,10 +11,11 @@ router.post('/startparty/:id', auth, async (req, res) => {
 
     const party = await Party.findOneAndUpdate({ partyId: id }, { playlistId });
     if (!party) res.status(404).send('Party not found');
-    await party.save();
+
+    const updatedeParty = await Party.findOne({ partyId: id });
 
     return res.status(200).json({
-      party,
+      updatedeParty,
     });
   } catch (err) {
     console.error(err.message);
