@@ -5,10 +5,6 @@ const PartySchema = new mongoose.Schema({
     required: true,
     type: String,
   },
-  date: {
-    required: true,
-    type: String,
-  },
   partyId: {
     required: true,
     unique: true,
@@ -19,8 +15,8 @@ const PartySchema = new mongoose.Schema({
     type: String,
   },
   playlistId: {
-    type: String
-  }
+    type: String,
+  },
 });
 
 module.exports = Party = mongoose.model('parties', PartySchema);
