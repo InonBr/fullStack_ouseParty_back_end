@@ -4,6 +4,24 @@ const Party = require('../models/Party');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 
+router.post('/startparty/:id', auth, async (req, res) => {
+  try {
+    const { playlistId } = req.body;
+    const { id } = req.params;
+
+    const party = await Party.findOneAndUpdate({ partyId: id }, { playlistId });
+    if (!party) res.status(404).send('Party not found');
+    await party.save();
+
+    return res.status(200).json({
+      party,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 router.post('/startparty', auth, async (req, res) => {
   try {
     const userId = req.body.userId;
@@ -20,21 +38,6 @@ router.post('/startparty', auth, async (req, res) => {
     user.partysIds.push(partyId);
     await user.save();
     res.status(200).json(newParty);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
-  }
-});
-
-router.post('/startparty/:id', auth, async (req, res) => {
-  try {
-    console.log('dsadasdsadsasa');
-    const { playlistId } = req.body;
-    const { id } = req.params;
-    const party = await Party.findOneAndUpdate({ partyId: id }, { playlistId });
-    if (!party) res.status(404).send('Party not found');
-    await party.save();
-    res.send('Playlist is set on the party!');
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
