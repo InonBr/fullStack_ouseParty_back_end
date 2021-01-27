@@ -5,6 +5,7 @@ const homeRouter = require('./routers/homeRouter');
 const userRouter = require('./routers/userRouter');
 const partyRouter = require('./routers/partyRouter');
 const spotifylogin = require('./routers/spotifyLogin');
+const spotifyDelete = require('./routers/spotifyDelete');
 const connectDB = require('./db/db');
 
 const port = 5000;
@@ -19,6 +20,7 @@ app.use(homeRouter);
 app.use(userRouter);
 app.use(partyRouter);
 app.use(spotifylogin);
+app.use(spotifyDelete);
 
 app.listen(port, () => {
   console.log(`🟢 App listening at http://localhost:${port}`);
