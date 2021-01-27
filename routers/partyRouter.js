@@ -4,7 +4,7 @@ const Party = require('../models/Party');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 
-router.post('/startparty/:id', auth, async (req, res) => {
+router.post('/startparty/:id', async (req, res) => {
   try {
     const { playlistId } = req.body;
     const { id } = req.params;
@@ -23,7 +23,7 @@ router.post('/startparty/:id', auth, async (req, res) => {
   }
 });
 
-router.post('/startparty', auth, async (req, res) => {
+router.post('/startparty', async (req, res) => {
   try {
     const userId = req.body.userId;
     const name = req.body.username;
